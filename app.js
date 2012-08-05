@@ -1,8 +1,6 @@
-var io = require('socket.io'),
-	express = require('express');
-
-var app = express(),
-	io = io.listen(app);
+var express = require('express');
+var app = express();
+var io = require('socket.io').listen(app);
 
 // Configuration
 
