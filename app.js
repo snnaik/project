@@ -1,6 +1,29 @@
 var express = require('express');
 var app = express();
-var io = require('socket.io').listen(app);
+var WebSocketServer = require('websocket').server;
+var http = require('http');
+
+var server = http.createServer(function(request, response) {});
+server.listen(app, function() { });
+
+wsServer = new WebSocketServer({
+    httpServer: server
+});
+
+wsServer.on('request', function(request) {
+    var connection = request.accept(null, request.origin);
+    connection.on('message', function(message) {
+        if (message.type === 'utf8') {
+            // process WebSocket message
+			
+			connection.sendUTF(JSON.stringify({ type:'vote', data: message }));
+        }
+    });
+
+    connection.on('close', function(connection) {
+        // close user connection
+    });
+});
 
 // Configuration
 
@@ -15,12 +38,6 @@ app.configure('development', function(){
   app.use(express.errorHandler({ dumpExceptions: true, showStack: true }));
 });
 
-io.sockets.on('connection', function(socket) {
-	socket.emit('news', { hello: 'world' });
-	socket.on('my other event', function(data) {
-		console.log(data);
-	});
-});
 
 // Routes
 app.get('/', function(req, res){
@@ -34,4 +51,4 @@ app.get('/votes', function(req, res){
   res.sendfile(__dirname + '/public/votes.json');
 });
 
-app.listen(80);
+app.listen(3003);
