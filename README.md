@@ -1,2 +1,1 @@
-project
-=======
+readme.txt
